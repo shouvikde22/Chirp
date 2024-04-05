@@ -5,4 +5,15 @@
     <string name="password">Password</string>
     <string name="log_out">log out</string>
     <string name="profile">Profile</string>
+
+    <string name="sign_in">Sign In</string>
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="don_t_have_an_account">Don\'t have an account ?</string>
+    <string name="already_have_an_account">Already have an account ?</string>
+
+    <string name="concat">%1$s %2$s</string>
+    <string name="bio">Bio</string>
+    <string name="edit_name">Edit Name</string>
+    <string name="save_profile">Save Profile</string>
 </resources>

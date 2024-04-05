@@ -12,12 +12,11 @@
         android:textColor="@color/black"
         android:textSize="10dp"/>
 
-    <com.
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/google_progress"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="10dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/textViewwait"
-        gbp:type="folding_circles"/>
+        android:layout_below="@+id/textViewwait" />
 </RelativeLayout>

@@ -1,6 +1,9 @@
 package com.example.chirp
 
 data class User(
-    var uid : Int? = null,
-    var name : String ?= null,
-    var bio : String ?= null)
+    val id: String? = null,
+    var name: String? = null,
+    val email: String?,
+    val password: String? = null,
+    var picture: String? = null,
+    var bio: String? = null)

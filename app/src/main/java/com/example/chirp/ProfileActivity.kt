@@ -1,93 +1,150 @@
 package com.example.chirp
 
-import android.app.Dialog
+import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.util.Log
 import android.view.View
-import android.view.Window
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.ActionCodeUrl
+import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.chirp.databinding.ActivityProfileBinding
+import com.example.fashionadvisor.CheckNetwork
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.auth.internal.RecaptchaActivity
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.gson.Gson
 
 class ProfileActivity : AppCompatActivity() {
-    private lateinit var auth : FirebaseAuth
-    private lateinit var databaseReference: DatabaseReference
-    private lateinit var storageReference: StorageReference
-    private lateinit var imageUri: Uri
-    private lateinit var dialog: Dialog
 
-
+    private lateinit var binding : ActivityProfileBinding
+    private lateinit var storageRef : StorageReference
+    private lateinit var dbRef : CollectionReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-        auth = FirebaseAuth.getInstance()
-        val uid = auth.currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        val saveBtn : Button = findViewById(R.id.editProfileButton)
-        val firstName : TextView = findViewById(R.id.firs)
-        saveBtn.setOnClickListener {
 
-            showProgressBar()
-            val firstName = binding.etFirstName.text.toString()
-            val lastName = binding.etLastName.text.tostring()
-            val bio = binding.etBio.text.toString()
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-            val user = User(firstName, lastName,bio)
-            if (uid != null){
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primaryColor)
 
-                databaseReference.child(uid).setValue(user).addOnCanceledListener {
+        val sharedPreferences: SharedPreferences = this.getSharedPreferences("User", Context.MODE_PRIVATE)
+        val userDataJson = sharedPreferences.getString("user", null)
+        val user = userDataJson?.let { Gson().fromJson(it, User::class.java)}
 
-                    if (it.isSuccessful){
+        storageRef = FirebaseStorage.getInstance().getReference("Images")
+        dbRef = FirebaseFirestore.getInstance().collection("User")
 
-                        uploadProfilePic()
+        Log.d("Saved user", user.toString())
+        if (user != null) {
+            if (user.picture != null){
+                Log.d("Saved User", "$user")
+                Glide.with(this)
+                    .load(user.picture)
+                    .placeholder(R.drawable.img_user)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)// Add a placeholder drawable
+                    .error(R.drawable.img_user) // Add a drawable for error cases
+                    .into(binding.imgUserProfile)
+            }
+            binding.editTextName.setText(user.name)
+            if (user.picture != null){
+                binding.editTextBio.setText(user.bio)
+            }
+        }
 
-                    }else{
 
-                        hideProgressBar()
-
+        binding.buttonSaveProfile.setOnClickListener{
+            if(CheckNetwork.isInternetAvailable(this)) {
+                if (binding.editTextName.visibility == View.VISIBLE) {
+                    if (user != null) {
+                        user.name = binding.editTextName.text.toString()
+                        user.bio = binding.editTextBio.text.toString()
+                        dbRef.document(user.email.toString())
+                            .update(mapOf("name" to user.name, "bio" to user.bio))
+                            .addOnCompleteListener {
+                                Log.d("dbref", "success")
+                                Toast.makeText(this, "Profile Updated", Toast.LENGTH_SHORT).show()
+                                StoreUser.saveData(user, this)
+                            }
+                            .addOnFailureListener {
+                                Log.d("dbref", "failed")
+                            }
                     }
                 }
+            }else{
+                Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show()
+            }
+        }
 
+        val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            binding.imgUserProfile.setImageURI(uri)
+            Log.d("picker", "success")
+
+            if (uri != null) {
+                storageRef.child(user!!.email.toString()).putFile(uri)
+                    .addOnSuccessListener { task ->
+                        Log.d("storage", "success")
+                        Log.d("email", "$user")
+
+                        // Retrieve the download URL of the uploaded image
+                        task.metadata!!.reference!!.downloadUrl
+                            .addOnSuccessListener { url ->
+                                val img = url.toString()
+                                user.picture = img
+                                StoreUser.saveData(user, this)
+                                // Update the user's document in Firestore with the image URL
+                                dbRef.document(user.email.toString()).update(mapOf("picture" to img))
+                                    .addOnCompleteListener {
+                                        Log.d("dbref", "success")
+                                        Toast.makeText(this, "Profile Updated", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener {
+                                        Log.d("dbref", "failed")
+                                    }
+                            }
+                    }
+                    .addOnFailureListener {
+                        Log.e("storage", "failed")
+                    }
+            }
+        }
+
+
+        binding.icCam.setOnClickListener{
+            if(CheckNetwork.isInternetAvailable(this)){
+                pickImage.launch("image/*")
+            }else{
+                Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show()
             }
 
         }
 
-        private fun uploadProfilePic() {
-            imageUri = Uri.parse("android.resource://$packageName/${R.drawable.profile}")
-            storageReference = FirebaseStorage.getInstance().getReference("Users/"+auth.currentUser?.uid)
-            storageReference.putFile(imageUri).addOnSuccessListener {
-                hideProgressBar()
-                Toast.makeText(this@ProfileActivity,"Profile successfuly updated",Toast.LENGTH_SHORT).show()
+        binding.btnLogout.setOnClickListener{
+            FirebaseAuth.getInstance().signOut()
+            sharedPreferences.edit().clear().apply()
+            Toast.makeText(this, "Loged Out", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this,RecaptchaActivity::class.java))
+            finish()
 
-            }.addOnCanceledListener {
-                hideProgressBar()
-                Toast.makeText(this@ProfileActivity,"Failed to upload the image",Toast.LENGTH_SHORT).show()
+        }
 
-            }
+        binding.imgButtonBack.setOnClickListener{
+            super.onBackPressed()
         }
     }
 
-    private fun showProgressBar() {
-        dialog = Dialog(this@ProfileActivity)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_wait)
-        dialog.setCanceledOnTouchOutside(false)
+    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
+        Intent()
+        return super.getOnBackInvokedDispatcher()
     }
 
-    fun hideProgressBar(){
-        dialog.dismiss()
-    }
 }
-

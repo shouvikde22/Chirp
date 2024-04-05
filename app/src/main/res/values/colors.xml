@@ -8,4 +8,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lightred">#ffe5e5</color>
+
+    <color name="primaryColor"> #FF2F61</color>
+    <color name="accentColor">#FF5858</color>
+
+    <color name="grey">#B0ADAD</color>
+    <color name="greyLight">#F3F3F3</color>
+
+    <color name="textColor">#1E1E1E</color>
+
+    <color name="red">#FF2E2E</color>
+
+    <color name="transparent">#00000000</color>
 </resources>

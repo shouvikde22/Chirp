@@ -1,65 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true"
+    tools:context=".ProfileActivity">
 
-    <!-- Profile Picture -->
     <ImageView
-        android:id="@+id/profileImageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/default_profile"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/imgProfieBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/gdlineMid"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Profile Picture"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bg_profile" />
 
-    <!-- Username -->
-    <TextView
-        android:id="@+id/usernameTextView"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlineTopProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="John Doe"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/profileImageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.10259918" />
 
-    <!-- Status -->
-    <TextView
-        android:id="@+id/statusTextView"
+    <ImageButton
+        android:id="@+id/imgButtonBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Online"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/usernameTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:backgroundTint="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/textProfileTittle"
+        app:layout_constraintStart_toStartOf="@+id/gdlineRighttProfile"
+        app:layout_constraintTop_toTopOf="@+id/textProfileTittle"
+        app:srcCompat="@drawable/ic_back" />
 
-    <!-- Bio -->
     <TextView
-        android:id="@+id/bioTextView"
+        android:id="@+id/textProfileTittle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Software Developer | Coffee Lover"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/statusTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginStart="15dp"
+        android:text="@string/profile"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/gdlineTopProfile"
+        app:layout_constraintStart_toEndOf="@+id/imgButtonBack" />
 
-    <!-- Edit Profile Button -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_ic_cam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="-25dp"
+        android:layout_marginBottom="35dp"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="3dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardBgProfile"
+        app:layout_constraintEnd_toEndOf="@+id/cardBgProfile">
+
+        <ImageView
+            android:id="@+id/ic_cam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/primaryColor"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_camera" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardBgProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        app:cardCornerRadius="110dp"
+        app:layout_constraintBottom_toTopOf="@+id/gdlineMid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gdlineTopProfile"
+        app:layout_constraintVertical_bias="0.96">
+
+        <ImageView
+            android:id="@+id/imgUserProfile"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/img_user" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlineMid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlineRighttProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlineLeftProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSaveProfile"
+        app:layout_constraintEnd_toStartOf="@+id/gdlineLeftProfile"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/gdlineRighttProfile"
+        app:layout_constraintTop_toBottomOf="@+id/imgProfieBg">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:hint="@string/name"
+                app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/textColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/primaryColor"
+                    android:hint="@string/name"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="45dp"
+                    android:textColor="@color/textColor" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/ic_editName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/edit_name"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textInputName"
+                app:srcCompat="@drawable/ic_edit" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputBio"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:hint="@string/bio"
+                app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/textColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputName"
+                app:layout_constraintVertical_chainStyle="spread_inside">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextBio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/primaryColor"
+                    android:hint="@string/bio"
+                    android:lines="4"
+                    android:minLines="2"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="45dp"
+                    android:textColor="@color/textColor" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/ic_ediBio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputBio"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textInputBio"
+                app:srcCompat="@drawable/ic_edit" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
     <Button
-        android:id="@+id/editProfileButton"
-        android:layout_width="wrap_content"
+        android:id="@+id/buttonSaveProfile"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Edit Profile"
-        app:layout_constraintTop_toBottomOf="@id/bioTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_text_box"
+        android:padding="10sp"
+        android:text="@string/save_profile"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogout"
+        app:layout_constraintEnd_toStartOf="@+id/gdlineLeftProfile"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/gdlineRighttProfile"
+        app:layout_constraintWidth_percent="0.8"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_text_box"
+        android:includeFontPadding="false"
+        android:minHeight="0dp"
+        android:padding="10dp"
+        android:text="@string/log_out"
+        android:textColor="@color/greyLight"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gdlineLeftProfile"
+        app:layout_constraintStart_toStartOf="@+id/gdlineRighttProfile" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

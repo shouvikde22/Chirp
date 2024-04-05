@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_screen_grad"
+    tools:context=".RegLoginContActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdRegLogLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdRegLogRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdRegLogBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdRegLogTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <ImageView
+        android:id="@+id/imgWeis"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/gdRegLogRight"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="@+id/gdRegLogLeft"
+        app:layout_constraintTop_toTopOf="@+id/gdRegLogTop"
+        app:srcCompat="@drawable/logo" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragContRegLog"
+        android:name="com.example.chirp.RegistrationFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/gdRegLogBottom"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/gdRegLogRight"
+        app:layout_constraintStart_toStartOf="@+id/gdRegLogLeft" />
+
+    <TextView
+        android:id="@+id/textSwitchRegLog"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/don_t_have_an_account"
+        android:textAlignment="center"
+        android:textColor="@color/textColor"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/gdRegLogRight"
+        app:layout_constraintStart_toStartOf="@+id/gdRegLogLeft"
+        app:layout_constraintTop_toTopOf="@+id/gdRegLogBottom" />
+</androidx.constraintlayout.widget.ConstraintLayout>
