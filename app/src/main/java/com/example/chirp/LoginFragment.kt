@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.chirp.databinding.FragmentLoginBinding
-import com.example.fashionadvisor.CheckNetwork
+import com.example.fashionadvisor.com.example.chirp.CheckNetwork
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -35,6 +35,11 @@ class LoginFragment : Fragment() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         dbRef = FirebaseDatabase.getInstance().getReference().child("User")
+
+        if(firebaseAuth.currentUser != null){
+            startActivity(Intent(requireActivity(), MainActivity::class.java))
+            activity?.finish()
+        }
         binding.btnSignIn.setOnClickListener{
             if(CheckNetwork.isInternetAvailable(requireActivity())){
                 user = User(

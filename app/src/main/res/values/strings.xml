@@ -16,4 +16,11 @@
     <string name="bio">Bio</string>
     <string name="edit_name">Edit Name</string>
     <string name="save_profile">Save Profile</string>
+    <string name="username">Username</string>
+    <string name="time">time</string>
+    <string name="text_view">Text View</string>
+    <string name="online">Online</string>
+    <string name="chats">Chats</string>
+
+    <string name="message"><![CDATA[Message>]]></string>
 </resources>

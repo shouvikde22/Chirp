@@ -1,25 +1,18 @@
 package com.example.chirp
 
-import android.util.Log
+//import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.DataSnapshot
 
 class UserViewModel: ViewModel() {
 
     fun convertToUserModel(document: DataSnapshot): User {
+        val id : String? = document.key
+        val name: String? = document.child("name").getValue(String::class.java)
+        val email: String? = document.child("email").getValue(String::class.java)
+        val picture = document.child("picture").getValue(String::class.java) ?: ""
+        val bio = document.child("bio").getValue(String::class.java) ?: ""
 
-        val keys = document.children.map { it.key }
-        val values = document.children.map { it.getValue(Any::class.java) }
-        val user = document.getValue(User::class.java)
-        Log.d("user", "$user")
-        return user!!
-//        val id = values
-//        val name = document.getString("name")
-//        val email = document.id
-//        val picture = document.getString("picture") ?: ""
-//        val bio = document.getString("bio") ?: ""
-//
-//
-//        return User(id = id, name= name, email = email, picture =  picture, bio =  bio)
+        return User(id = id, name= name, email = email, picture =  picture, bio =  bio)
     }
 }

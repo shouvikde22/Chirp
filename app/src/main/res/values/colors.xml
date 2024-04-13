@@ -12,6 +12,8 @@
     <color name="primaryColor"> #FF2F61</color>
     <color name="accentColor">#FF5858</color>
 
+    <color name="accentGrey">#e0e0e0</color>
+
     <color name="grey">#B0ADAD</color>
     <color name="greyLight">#F3F3F3</color>
 
@@ -20,4 +22,6 @@
     <color name="red">#FF2E2E</color>
 
     <color name="transparent">#00000000</color>
+    <color name="blur">#80000000</color>
+
 </resources>

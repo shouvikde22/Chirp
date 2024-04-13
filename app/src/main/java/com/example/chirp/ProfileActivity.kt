@@ -14,11 +14,11 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.chirp.databinding.ActivityProfileBinding
-import com.example.fashionadvisor.CheckNetwork
+import com.example.fashionadvisor.com.example.chirp.CheckNetwork
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.internal.RecaptchaActivity
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
@@ -27,7 +27,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityProfileBinding
     private lateinit var storageRef : StorageReference
-    private lateinit var dbRef : CollectionReference
+    private lateinit var dbRef : DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class ProfileActivity : AppCompatActivity() {
         val user = userDataJson?.let { Gson().fromJson(it, User::class.java)}
 
         storageRef = FirebaseStorage.getInstance().getReference("Images")
-        dbRef = FirebaseFirestore.getInstance().collection("User")
+        dbRef = FirebaseDatabase.getInstance().getReference("User").child(user?.id.toString())
 
         Log.d("Saved user", user.toString())
         if (user != null) {
@@ -68,8 +68,7 @@ class ProfileActivity : AppCompatActivity() {
                     if (user != null) {
                         user.name = binding.editTextName.text.toString()
                         user.bio = binding.editTextBio.text.toString()
-                        dbRef.document(user.email.toString())
-                            .update(mapOf("name" to user.name, "bio" to user.bio))
+                        dbRef.updateChildren(mapOf("name" to user.name, "bio" to user.bio))
                             .addOnCompleteListener {
                                 Log.d("dbref", "success")
                                 Toast.makeText(this, "Profile Updated", Toast.LENGTH_SHORT).show()
@@ -102,7 +101,7 @@ class ProfileActivity : AppCompatActivity() {
                                 user.picture = img
                                 StoreUser.saveData(user, this)
                                 // Update the user's document in Firestore with the image URL
-                                dbRef.document(user.email.toString()).update(mapOf("picture" to img))
+                                dbRef.updateChildren(mapOf("picture" to img))
                                     .addOnCompleteListener {
                                         Log.d("dbref", "success")
                                         Toast.makeText(this, "Profile Updated", Toast.LENGTH_SHORT).show()

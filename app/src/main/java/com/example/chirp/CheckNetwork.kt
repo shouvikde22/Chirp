@@ -1,4 +1,4 @@
-package com.example.fashionadvisor
+package com.example.fashionadvisor.com.example.chirp
 
 import android.content.Context
 import android.net.ConnectivityManager

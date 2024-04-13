@@ -7,6 +7,26 @@
     tools:context=".MainActivity">
 
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gdlineMainTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.10" />
+
+    <include
+        android:id="@+id/toolbar_main_container"
+        layout="@layout/toolbar_main_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="10dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/gdlineMainTop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userRecyclerView"
         android:layout_width="0dp"
@@ -14,6 +34,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gdlineMainTop"
         tools:listitem="@layout/user_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

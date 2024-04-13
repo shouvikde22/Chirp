@@ -5,10 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
 
 class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -32,7 +35,8 @@ class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapt
     }
 
     inner class UserViewHolder(itemView :View) : RecyclerView.ViewHolder(itemView) {
-        val textName : TextView = itemView.findViewById(R.id.textName)
+        val textName : TextView = itemView.findViewById(R.id.textUsername)
+        val imgUser : ImageView = itemView.findViewById(R.id.imgUser)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserAdapter.UserViewHolder {
@@ -49,13 +53,16 @@ class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapt
             val intent = Intent(context, ChatActivity::class.java)
             intent.putExtra("name", currentUser.name)
             intent.putExtra("uid", currentUser.id)
-
+            intent.putExtra("picture", currentUser?.picture)
             context.startActivity(intent)
-
-            intent.putExtra("name", currentUser.name)
-            intent.putExtra("uid", FirebaseAuth.getInstance().currentUser?.uid)
         }
 
+        Glide.with(holder.itemView.context)
+            .load(currentUser.picture)
+            .placeholder(R.drawable.img_user)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)// Add a placeholder drawable
+            .error(R.drawable.img_user)
+            .into(holder.imgUser)
     }
     override fun getItemCount(): Int {
         return differ.currentList.size
