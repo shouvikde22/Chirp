@@ -1,21 +1,22 @@
 package com.example.chirp
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.chirp.databinding.ActivityChatBinding
-import com.example.chirp.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.google.gson.Gson
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ChatActivity : AppCompatActivity() {
 
@@ -27,6 +28,7 @@ class ChatActivity : AppCompatActivity() {
     private var receiverRoom: String? = null
     private var senderRoom: String? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -85,7 +87,8 @@ class ChatActivity : AppCompatActivity() {
         binding.icSendMsg.setOnClickListener {
             val messageText = binding.textTypeMsg.text.toString().trim()
             if (messageText.isNotEmpty()) {
-                val messageObject = Message(messageText, senderUid)
+                val time = getCurrentTime()
+                val messageObject = Message(message = messageText,senderId =  senderUid, time = time)
                 sendMessage(messageObject)
             }
         }
@@ -103,6 +106,13 @@ class ChatActivity : AppCompatActivity() {
                         binding.textTypeMsg.setText("")
                     }
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrentTime(): String {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        return current.format(formatter)
     }
 }
 

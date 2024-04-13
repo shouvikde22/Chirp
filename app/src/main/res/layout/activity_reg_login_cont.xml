@@ -38,14 +38,14 @@
     <ImageView
         android:id="@+id/imgWeis"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:scaleType="center"
+        app:layout_constraintBottom_toTopOf="@+id/fragContRegLog"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@+id/gdRegLogRight"
-        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="@+id/gdRegLogLeft"
         app:layout_constraintTop_toTopOf="@+id/gdRegLogTop"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/chirp_logo" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragContRegLog"

@@ -3,9 +3,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/chirp_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logo"
+        android:roundIcon="@drawable/chirp_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Chirp">
         <activity
@@ -14,9 +14,10 @@
         <activity
             android:name=".ChatActivity"
             android:exported="false" />
-        <activity android:name=".Signup" />
+        <activity android:name=".RegLoginContActivity"
+            android:exported="false"/>
         <activity
-            android:name=".RegLoginContActivity"
+            android:name=".WelcomeScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

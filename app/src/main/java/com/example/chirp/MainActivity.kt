@@ -1,5 +1,6 @@
 package com.example.chirp
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -42,7 +43,12 @@ class MainActivity : AppCompatActivity(){
         window.statusBarColor = ContextCompat.getColor(this, R.color.primaryColor)
 
         binding.toolbarMainContainer.imgUser.setOnClickListener{
-            startActivity(Intent(this@MainActivity, ProfileActivity::class.java))
+//            val profile = ProfileActivity()
+//            profile.setListener(this)
+//            profile.show((activity as AppCompatActivity).supportFragmentManager, "show Goal")
+
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivityForResult(intent, 1)
         }
 
         val sharedPreferences: SharedPreferences = this.getSharedPreferences("User", Context.MODE_PRIVATE)
@@ -68,20 +74,17 @@ class MainActivity : AppCompatActivity(){
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
                 for (postSnapshot in snapshot.children){
-                    Log.d("User", postSnapshot.value.toString())
                     val currentUser = User(
                         id = postSnapshot?.key,
                         name = postSnapshot?.child("name")?.getValue(String::class.java),
                         email = postSnapshot?.child("email")?.getValue(String::class.java),
                         picture = postSnapshot?.child("picture")?.getValue(String::class.java)
                     )
-                    Log.d("current","${user?.email}    ${currentUser.id.toString()}")
                     if(user?.email  != currentUser.email.toString()){
                         userList.add(currentUser)
                     }
             }
 
-                Log.d("user list","$userList")
                 adapter.saveData(userList)
                 userRecyclerView.scrollToPosition(userList.size - 1)
         }
@@ -108,5 +111,19 @@ class MainActivity : AppCompatActivity(){
             return true
         }
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("updated Pic", "picture.toString()")
+        if (resultCode == Activity.RESULT_OK) {
+            val picture = data?.getStringExtra("picture")
+            Glide.with(this)
+                .load(picture)
+                .placeholder(R.drawable.img_user)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)// Add a placeholder drawable
+                .error(R.drawable.img_user) // Add a drawable for error cases
+                .into(binding.toolbarMainContainer.imgUser)
+        }
     }
 }

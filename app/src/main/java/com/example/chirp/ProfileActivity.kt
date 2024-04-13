@@ -1,5 +1,6 @@
 package com.example.chirp
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -28,6 +29,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding : ActivityProfileBinding
     private lateinit var storageRef : StorageReference
     private lateinit var dbRef : DatabaseReference
+    private var user : User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,25 +41,23 @@ class ProfileActivity : AppCompatActivity() {
 
         val sharedPreferences: SharedPreferences = this.getSharedPreferences("User", Context.MODE_PRIVATE)
         val userDataJson = sharedPreferences.getString("user", null)
-        val user = userDataJson?.let { Gson().fromJson(it, User::class.java)}
+        user = userDataJson?.let { Gson().fromJson(it, User::class.java)}
 
         storageRef = FirebaseStorage.getInstance().getReference("Images")
         dbRef = FirebaseDatabase.getInstance().getReference("User").child(user?.id.toString())
 
-        Log.d("Saved user", user.toString())
         if (user != null) {
-            if (user.picture != null){
-                Log.d("Saved User", "$user")
+            if (user!!.picture != null){
                 Glide.with(this)
-                    .load(user.picture)
+                    .load(user!!.picture)
                     .placeholder(R.drawable.img_user)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)// Add a placeholder drawable
                     .error(R.drawable.img_user) // Add a drawable for error cases
                     .into(binding.imgUserProfile)
             }
-            binding.editTextName.setText(user.name)
-            if (user.picture != null){
-                binding.editTextBio.setText(user.bio)
+            binding.editTextName.setText(user!!.name)
+            if (user!!.picture != null){
+                binding.editTextBio.setText(user!!.bio)
             }
         }
 
@@ -66,16 +66,14 @@ class ProfileActivity : AppCompatActivity() {
             if(CheckNetwork.isInternetAvailable(this)) {
                 if (binding.editTextName.visibility == View.VISIBLE) {
                     if (user != null) {
-                        user.name = binding.editTextName.text.toString()
-                        user.bio = binding.editTextBio.text.toString()
-                        dbRef.updateChildren(mapOf("name" to user.name, "bio" to user.bio))
+                        user!!.name = binding.editTextName.text.toString()
+                        user!!.bio = binding.editTextBio.text.toString()
+                        dbRef.updateChildren(mapOf("name" to user!!.name, "bio" to user!!.bio))
                             .addOnCompleteListener {
-                                Log.d("dbref", "success")
                                 Toast.makeText(this, "Profile Updated", Toast.LENGTH_SHORT).show()
-                                StoreUser.saveData(user, this)
+                                StoreUser.saveData(user!!, this)
                             }
                             .addOnFailureListener {
-                                Log.d("dbref", "failed")
                             }
                     }
                 }
@@ -86,20 +84,16 @@ class ProfileActivity : AppCompatActivity() {
 
         val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             binding.imgUserProfile.setImageURI(uri)
-            Log.d("picker", "success")
 
             if (uri != null) {
                 storageRef.child(user!!.email.toString()).putFile(uri)
                     .addOnSuccessListener { task ->
-                        Log.d("storage", "success")
-                        Log.d("email", "$user")
-
                         // Retrieve the download URL of the uploaded image
                         task.metadata!!.reference!!.downloadUrl
                             .addOnSuccessListener { url ->
                                 val img = url.toString()
-                                user.picture = img
-                                StoreUser.saveData(user, this)
+                                user!!.picture = img
+                                StoreUser.saveData(user!!, this)
                                 // Update the user's document in Firestore with the image URL
                                 dbRef.updateChildren(mapOf("picture" to img))
                                     .addOnCompleteListener {
@@ -109,6 +103,7 @@ class ProfileActivity : AppCompatActivity() {
                                     .addOnFailureListener {
                                         Log.d("dbref", "failed")
                                     }
+
                             }
                     }
                     .addOnFailureListener {
@@ -141,9 +136,10 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
-        Intent()
-        return super.getOnBackInvokedDispatcher()
+    override fun onBackPressed() {
+        val resultIntent = Intent()
+        resultIntent.putExtra("picture", user?.picture) // newData is the updated data
+        setResult(Activity.RESULT_OK, resultIntent)
+        super.onBackPressed()
     }
-
 }

@@ -36,10 +36,12 @@ class MessageAdapter(private val context: Context) :
 
     inner class SentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val sentMessage: TextView = itemView.findViewById(R.id.textSenMsg)
+        val senTime : TextView = itemView.findViewById(R.id.textSenTime)
     }
 
     inner class ReceiveViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val receiveMessage: TextView = itemView.findViewById(R.id.textRecMsg)
+        val recTime : TextView = itemView.findViewById(R.id.textRecTime)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -67,8 +69,10 @@ class MessageAdapter(private val context: Context) :
         val currentMessage = differ.currentList[position]
         if (holder is SentViewHolder) {
             holder.sentMessage.text = currentMessage.message
+            holder.senTime.text = currentMessage.time
         } else if (holder is ReceiveViewHolder) {
             holder.receiveMessage.text = currentMessage.message
+            holder.recTime.text = currentMessage.time
         }
     }
 
