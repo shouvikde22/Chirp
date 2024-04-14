@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(){
         mDbRef.child("User").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
+                Log.d("user update", "clear $userList")
                 for (postSnapshot in snapshot.children){
                     val currentUser = User(
                         id = postSnapshot?.key,
@@ -82,10 +83,9 @@ class MainActivity : AppCompatActivity(){
                     )
                     if(user?.email  != currentUser.email.toString()){
                         userList.add(currentUser)
+                        adapter.saveData(userList)
                     }
             }
-
-                adapter.saveData(userList)
                 userRecyclerView.scrollToPosition(userList.size - 1)
         }
 

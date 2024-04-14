@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.google.firebase.auth.FirebaseAuth
 
 class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
@@ -22,6 +21,7 @@ class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapt
         }
 
         override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
+            Log.d("data same", "${oldItem == newItem}")
             return oldItem == newItem
         }
     }
@@ -29,8 +29,8 @@ class UserAdapter(private val context: Context) : RecyclerView.Adapter<UserAdapt
 
     private val differ = AsyncListDiffer(this,differCallBack)
 
-    fun saveData( dataResponse: ArrayList<User>){
-        differ.submitList(dataResponse)
+    fun saveData(dataResponse: List<User>) {
+        differ.submitList(dataResponse.toMutableList())
         Log.d("data saved", "$dataResponse")
     }
 

@@ -132,6 +132,9 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         binding.imgButtonBack.setOnClickListener{
+            val resultIntent = Intent()
+            resultIntent.putExtra("picture", user?.picture) // newData is the updated data
+            setResult(Activity.RESULT_OK, resultIntent)
             super.onBackPressed()
         }
     }
